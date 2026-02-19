@@ -7,13 +7,13 @@ import * as ImagePicker from 'expo-image-picker';
 interface FoodScannerModalProps {
     visible: boolean;
     onClose: () => void;
-    onAdd: (name: string, calories: number, protein: number, carbs: number, fat: number, meal: string) => void;
+    onAdd: (name: string, calories: number, protein: number, carbs: number, fat: number, fiber: number, meal: string) => void;
 }
 
 export const FoodScannerModal = ({ visible, onClose, onAdd }: FoodScannerModalProps) => {
     const [step, setStep] = useState<'initial' | 'scanning' | 'result'>('initial');
     const [imageUri, setImageUri] = useState<string | null>(null);
-    const [scannedResult, setScannedResult] = useState<{ name: string; calories: number; protein: number; carbs: number; fat: number } | null>(null);
+    const [scannedResult, setScannedResult] = useState<{ name: string; calories: number; protein: number; carbs: number; fat: number; fiber: number } | null>(null);
     const [selectedMeal, setSelectedMeal] = useState<string | null>(null);
 
     const pickImage = async (useCamera: boolean) => {
@@ -55,11 +55,11 @@ export const FoodScannerModal = ({ visible, onClose, onAdd }: FoodScannerModalPr
         setTimeout(() => {
             // Mock AI Result with Macros
             const mockFoods = [
-                { name: "Avocado Toast", calories: 350, protein: 12, carbs: 45, fat: 18 },
-                { name: "Grilled Chicken Salad", calories: 420, protein: 45, carbs: 12, fat: 22 },
-                { name: "Protein Shake", calories: 180, protein: 30, carbs: 5, fat: 3 },
-                { name: "Salmon & Rice", calories: 550, protein: 40, carbs: 50, fat: 20 },
-                { name: "Oatmeal & Berries", calories: 300, protein: 10, carbs: 55, fat: 6 },
+                { name: "Avocado Toast", calories: 350, protein: 12, carbs: 45, fat: 18, fiber: 10 },
+                { name: "Grilled Chicken Salad", calories: 420, protein: 45, carbs: 12, fat: 22, fiber: 4 },
+                { name: "Protein Shake", calories: 180, protein: 30, carbs: 5, fat: 3, fiber: 1 },
+                { name: "Salmon & Rice", calories: 550, protein: 40, carbs: 50, fat: 20, fiber: 2 },
+                { name: "Oatmeal & Berries", calories: 300, protein: 10, carbs: 55, fat: 6, fiber: 8 },
             ];
             const randomFood = mockFoods[Math.floor(Math.random() * mockFoods.length)];
             setScannedResult(randomFood);
@@ -76,7 +76,7 @@ export const FoodScannerModal = ({ visible, onClose, onAdd }: FoodScannerModalPr
 
     const handleConfirm = () => {
         if (scannedResult && selectedMeal) {
-            onAdd(scannedResult.name, scannedResult.calories, scannedResult.protein, scannedResult.carbs, scannedResult.fat, selectedMeal);
+            onAdd(scannedResult.name, scannedResult.calories, scannedResult.protein, scannedResult.carbs, scannedResult.fat, scannedResult.fiber, selectedMeal);
             handleReset();
             onClose();
         }
@@ -147,6 +147,7 @@ export const FoodScannerModal = ({ visible, onClose, onAdd }: FoodScannerModalPr
                                         <Text style={styles.macroText}>Protein: {scannedResult.protein}g</Text>
                                         <Text style={styles.macroText}>Carbs: {scannedResult.carbs}g</Text>
                                         <Text style={styles.macroText}>Fat: {scannedResult.fat}g</Text>
+                                        <Text style={styles.macroText}>Fiber: {scannedResult.fiber}g</Text>
                                     </View>
                                 </View>
 

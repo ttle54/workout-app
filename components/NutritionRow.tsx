@@ -10,6 +10,7 @@ interface FoodItem {
     protein?: number;
     carbs?: number;
     fat?: number;
+    fiber?: number;
 }
 
 interface NutritionRowProps {
@@ -45,11 +46,12 @@ export const NutritionRow = ({ meal, calories, items, onAdd, theme }: NutritionR
                         <View key={item.id} style={[styles.foodItem, { backgroundColor: theme ? theme.surface : Colors.dark.surface }]}>
                             <View style={styles.foodInfo}>
                                 <Text style={[styles.foodName, { color: textColor }]}>{item.name}</Text>
-                                {(item.protein || item.carbs || item.fat) && (
+                                {(item.protein || item.carbs || item.fat || item.fiber) && (
                                     <Text style={[styles.foodMacros, { color: secondaryTextColor }]}>
                                         {item.protein ? `P: ${item.protein}g ` : ''}
                                         {item.carbs ? `C: ${item.carbs}g ` : ''}
-                                        {item.fat ? `F: ${item.fat}g` : ''}
+                                        {item.fat ? `F: ${item.fat}g ` : ''}
+                                        {item.fiber ? `Fib: ${item.fiber}g` : ''}
                                     </Text>
                                 )}
                             </View>

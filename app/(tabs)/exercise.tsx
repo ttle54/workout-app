@@ -139,7 +139,7 @@ export default function Exercise() {
                             daysPerWeek={prog.days}
                             durationMins={prog.mins}
                             color={prog.color}
-                            onPress={() => { }} // Placeholder for program detail
+                            onPress={() => router.push(`/program/${prog.id}`)}
                         />
                     ))}
                 </ScrollView>

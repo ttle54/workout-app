@@ -6,19 +6,21 @@ import { X, Check } from 'lucide-react-native';
 interface AddFoodModalProps {
     visible: boolean;
     onClose: () => void;
-    onAdd: (name: string, calories: number) => void;
+    onAdd: (name: string, calories: number, fiber?: number) => void;
     mealName: string;
 }
 
 export const AddFoodModal = ({ visible, onClose, onAdd, mealName }: AddFoodModalProps) => {
     const [foodName, setFoodName] = useState('');
     const [calories, setCalories] = useState('');
+    const [fiber, setFiber] = useState('');
 
     const handleAdd = () => {
         if (foodName && calories) {
-            onAdd(foodName, parseInt(calories, 10));
+            onAdd(foodName, parseInt(calories, 10), fiber ? parseFloat(fiber) : undefined);
             setFoodName('');
             setCalories('');
+            setFiber('');
             onClose();
         }
     };
@@ -63,6 +65,18 @@ export const AddFoodModal = ({ visible, onClose, onAdd, mealName }: AddFoodModal
                             keyboardType="numeric"
                             value={calories}
                             onChangeText={setCalories}
+                        />
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Fiber (g) (Optional)</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="e.g., 5"
+                            placeholderTextColor={Colors.dark.textSecondary}
+                            keyboardType="numeric"
+                            value={fiber}
+                            onChangeText={setFiber}
                         />
                     </View>
 
