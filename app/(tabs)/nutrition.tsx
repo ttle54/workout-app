@@ -17,6 +17,7 @@ interface FoodItem {
     protein?: number;
     carbs?: number;
     fat?: number;
+    fiber?: number;
 }
 
 interface MealLog {
@@ -45,21 +46,22 @@ export default function Nutrition() {
     }, [meals]);
 
     const macros = useMemo(() => {
-        let p = 0, c = 0, f = 0;
+        let p = 0, c = 0, f = 0, fbr = 0;
         Object.values(meals).forEach(meal => {
             meal.items.forEach(item => {
                 p += item.protein || 0;
                 c += item.carbs || 0;
                 f += item.fat || 0;
+                fbr += item.fiber || 0;
             });
         });
-        return { p, c, f };
+        return { p, c, f, fbr };
     }, [meals]);
 
     const progress = Math.min(caloriesConsumed / calorieGoal, 1);
 
-    const handleAddFood = (name: string, calories: number) => {
-        const newItem: FoodItem = { id: Math.random().toString(), name, calories };
+    const handleAddFood = (name: string, calories: number, fiber?: number) => {
+        const newItem: FoodItem = { id: Math.random().toString(), name, calories, fiber };
 
         setMeals(prev => ({
             ...prev,
@@ -70,14 +72,15 @@ export default function Nutrition() {
         }));
     };
 
-    const handleAddScannedFood = (name: string, calories: number, protein: number, carbs: number, fat: number, meal: string) => {
+    const handleAddScannedFood = (name: string, calories: number, protein: number, carbs: number, fat: number, fiber: number, meal: string) => {
         const newItem: FoodItem = {
             id: Math.random().toString(),
             name,
             calories,
             protein,
             carbs,
-            fat
+            fat,
+            fiber
         };
 
         setMeals(prev => ({
@@ -116,6 +119,13 @@ export default function Nutrition() {
             name: "Fat",
             population: macros.f > 0 ? macros.f : 10,
             color: theme.tertiary, // Neon Cyan
+            legendFontColor: theme.textSecondary,
+            legendFontSize: 12
+        },
+        {
+            name: "Fiber",
+            population: macros.fbr > 0 ? macros.fbr : 5,
+            color: theme.quaternary || '#D946EF', // Hot Pink
             legendFontColor: theme.textSecondary,
             legendFontSize: 12
         }
@@ -158,14 +168,14 @@ export default function Nutrition() {
                             <Text style={[styles.calRemainingText, { color: theme.text }]}>{Math.max(0, calorieGoal - caloriesConsumed)} <Text style={[styles.subText, { color: theme.textSecondary }]}>left</Text></Text>
                         </View>
                         <ProgressChart
-                            data={{ labels: ["Log"], data: [progress > 1 ? 1 : progress] }}
+                            data={{ labels: ["Log"], data: [progress] }}
                             width={100}
                             height={100}
                             strokeWidth={10}
                             radius={40}
                             chartConfig={{
                                 ...chartConfig,
-                                color: (opacity = 1) => theme.secondary, // Pink for Calories
+                                color: (opacity = 1) => `rgba(255, 105, 180, ${opacity})`, // Using hot pink / secondary instead of theme.secondary overriding opacity
                                 labelColor: () => "transparent",
                             }}
                             hideLegend={true}
@@ -211,36 +221,42 @@ export default function Nutrition() {
                             <Text style={{ color: theme.primary, fontSize: 10, fontWeight: 'bold' }}>P: {Math.round(macros.p)}g</Text>
                             <Text style={{ color: theme.secondary, fontSize: 10, fontWeight: 'bold' }}>C: {Math.round(macros.c)}g</Text>
                             <Text style={{ color: theme.tertiary, fontSize: 10, fontWeight: 'bold' }}>F: {Math.round(macros.f)}g</Text>
+                            <Text style={{ color: theme.quaternary || '#D946EF', fontSize: 10, fontWeight: 'bold' }}>Fib: {Math.round(macros.fbr)}g</Text>
                         </View>
                     </View>
 
                     {/* Weekly Trend Bar Chart */}
-                    <View style={[styles.chartCard, { flex: 1, marginLeft: 8, padding: 8, height: 220, backgroundColor: theme.surface, justifyContent: 'center' }]}>
-                        <Text style={[styles.chartTitle, { fontSize: 16, color: theme.text }]}>Weekly</Text>
+                    <View style={[styles.chartCard, { flex: 1, marginLeft: 8, padding: 12, height: 220, backgroundColor: theme.surface, justifyContent: 'center', alignItems: 'center' }]}>
+                        <Text style={[styles.chartTitle, { fontSize: 16, alignSelf: 'flex-start', color: theme.text }]}>Weekly</Text>
                         <BarChart
                             data={{
                                 labels: ["M", "T", "W", "T", "F", "S", "S"],
                                 datasets: [{ data: [2100, 2400, 1800, 2500, 2200, 2600, 2100] }]
                             }}
-                            width={screenWidth / 2 - 48} // Adjusted width to prevent cutoff
-                            height={160} // Increased height
+                            width={screenWidth / 2 - 40} // Fit comfortably within the flex-1 container (half screen minus padding/margins)
+                            height={160}
                             yAxisLabel=""
                             yAxisSuffix=""
                             chartConfig={{
                                 ...chartConfig,
+                                backgroundColor: theme.surface,
                                 backgroundGradientFrom: theme.surface,
                                 backgroundGradientTo: theme.surface,
                                 color: (opacity = 1) => theme.tertiary, // Teal/Cyan for Weekly
-                                barPercentage: 0.7,
+                                barPercentage: 0.6,
                                 propsForLabels: {
                                     fontSize: 10,
-                                    fill: theme.text // Ensure text is visible (White in Neo, Dark in Lively)
-                                }
+                                    fill: theme.textSecondary
+                                },
                             }}
                             withInnerLines={false}
                             showValuesOnTopOfBars={false}
                             fromZero
                             withHorizontalLabels={false}
+                            style={{
+                                paddingRight: 0, // Removes arbitrary right padding that pushes chart off-center
+                                marginLeft: -20, // Negative margin offsets react-native-chart-kit's default Y-axis space when horizontal labels are hidden
+                            }}
                         />
                     </View>
                 </View>

@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { useWorkout } from '../../context/WorkoutContext';
 import { LineChart, ContributionGraph } from 'react-native-chart-kit';
 import { ProgressWidget } from '../../components/ProgressWidget';
+import { ProgressModal } from '../../components/ProgressModal';
 import { OneRepMaxModal } from '../../components/OneRepMaxModal';
 import { BodyWeightModal } from '../../components/BodyWeightModal';
 import { ShareModal } from '../../components/ShareModal';
@@ -17,6 +18,7 @@ export default function Progress() {
     const router = useRouter();
     const [ormVisible, setOrmVisible] = useState(false);
     const [weightVisible, setWeightVisible] = useState(false);
+    const [progressModalVisible, setProgressModalVisible] = useState(false);
     const [shareVisible, setShareVisible] = useState(false);
     const [chartMode, setChartMode] = useState<'volume' | 'weight'>('volume');
     const { history, userMetrics } = useWorkout();
@@ -196,7 +198,7 @@ export default function Progress() {
 
                 {/* Personal Progress Widget */}
                 <ProgressWidget
-                    onOpenWeightLog={() => setWeightVisible(true)}
+                    onOpenWeightLog={() => setProgressModalVisible(true)}
                     weightChange={-1.5} // Mock
                     totalWorkouts={stats.totalWorkouts}
                     theme={theme}
@@ -252,6 +254,7 @@ export default function Progress() {
             </ScrollView>
 
             <OneRepMaxModal visible={ormVisible} onClose={() => setOrmVisible(false)} theme={theme} />
+            <ProgressModal visible={progressModalVisible} onClose={() => setProgressModalVisible(false)} />
             <BodyWeightModal
                 visible={weightVisible}
                 onClose={() => setWeightVisible(false)}
