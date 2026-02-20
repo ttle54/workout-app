@@ -4,7 +4,7 @@ import { ScreenLayout } from '../../components/ScreenLayout';
 import { Colors } from '../../constants/Colors';
 import { Play, Pause, RotateCcw, Flag, Clock, Timer as TimerIcon } from 'lucide-react-native';
 
-const { width } = Dimensions.get('window');
+const width = Math.min(Dimensions.get('window').width, 480);
 
 type TimerMode = 'stopwatch' | 'countdown';
 

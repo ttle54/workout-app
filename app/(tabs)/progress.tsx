@@ -12,7 +12,7 @@ import { OneRepMaxModal } from '../../components/OneRepMaxModal';
 import { BodyWeightModal } from '../../components/BodyWeightModal';
 import { ShareModal } from '../../components/ShareModal';
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Math.min(Dimensions.get('window').width, 480);
 
 export default function Progress() {
     const router = useRouter();

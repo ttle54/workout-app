@@ -8,7 +8,7 @@ import { AddFoodModal } from '../../components/AddFoodModal';
 import { FoodScannerModal } from '../../components/FoodScannerModal';
 import { ExternalLink, Plus, ScanLine, ChevronRight, BookOpen, Utensils, Pill } from 'lucide-react-native';
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Math.min(Dimensions.get('window').width, 480);
 
 interface FoodItem {
     id: string;

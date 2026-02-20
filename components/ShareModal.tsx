@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity, Linking, Dimensions } 
 import { Facebook, Instagram, Twitter, MessageCircle, X } from 'lucide-react-native';
 import { Colors } from '../constants/Colors';
 
-const { width } = Dimensions.get('window');
+const width = Math.min(Dimensions.get('window').width, 480);
 
 interface ShareModalProps {
     visible: boolean;

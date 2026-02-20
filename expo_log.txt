@@ -1,0 +1,23 @@
+
+> workout-app@1.0.0 web
+> expo start --web
+
+Starting project at /Users/tonyle/.gemini/antigravity/scratch/workout-app
+Starting Metro Bundler
+The following packages should be updated for best compatibility with the installed expo version:
+  react-native-webview@13.16.0 - expected version: 13.15.0
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+Web node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 68.8% ( 795/2547)
+Web Bundled 5177ms node_modules/expo-router/entry.js (2895 modules)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 69ms node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 62ms node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 74ms node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console

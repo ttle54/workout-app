@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'rea
 import { Colors } from '../constants/Colors';
 import { Play } from 'lucide-react-native';
 
-const { width } = Dimensions.get('window');
+const width = Math.min(Dimensions.get('window').width, 480);
 const cardWidth = (width - 48) / 2; // 2 columns with padding
 
 interface VideoCardProps {

@@ -6,7 +6,7 @@ import { useWorkout } from '../context/WorkoutContext';
 import * as ImagePicker from 'expo-image-picker';
 import { LineChart } from 'react-native-chart-kit';
 
-const { width } = Dimensions.get('window');
+const width = Math.min(Dimensions.get('window').width, 480);
 
 interface ProgressModalProps {
     visible: boolean;

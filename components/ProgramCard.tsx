@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-nati
 import { Colors } from '../constants/Colors';
 import { ChevronRight, Calendar, Clock } from 'lucide-react-native';
 
-const { width } = Dimensions.get('window');
+const width = Math.min(Dimensions.get('window').width, 480);
 const cardWidth = width * 0.7; // Shows next card slightly
 
 interface ProgramCardProps {
