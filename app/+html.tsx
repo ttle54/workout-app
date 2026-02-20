@@ -21,6 +21,11 @@ export default function Root({ children }: { children: React.ReactNode }) {
         <ScrollViewStyleReset />
 
         {/* Add any additional <head> elements that you want globally available on web... */}
+        <meta property="og:title" content="Fun Fitness" />
+        <meta property="og:description" content="A sleek, gamified fitness tracking app to log workouts and monitor progress in an Urban Neon style." />
+        <meta property="og:image" content="https://funfitness.vercel.app/fun_fitness_app_icon.png" />
+        <meta property="og:url" content="https://funfitness.vercel.app" />
+        <meta property="og:type" content="website" />
         <style dangerouslySetInnerHTML={{ __html: `body { background-color: #121212; }` }} />
       </head>
       <body>{children}</body>
