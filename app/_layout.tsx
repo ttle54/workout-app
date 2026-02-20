@@ -4,6 +4,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { View } from 'react-native';
 import 'react-native-reanimated';
 import { Colors } from '../constants/Colors';
 
@@ -43,10 +44,14 @@ export default function RootLayout() {
     return (
         <WorkoutProvider>
             <ThemeProvider value={CustomDarkTheme}>
-                <Stack>
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                    <Stack.Screen name="+not-found" />
-                </Stack>
+                <View style={{ flex: 1, backgroundColor: Colors.dark.background }}>
+                    <View style={{ flex: 1, width: '100%', maxWidth: 480, alignSelf: 'center', backgroundColor: Colors.dark.background }}>
+                        <Stack>
+                            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                            <Stack.Screen name="+not-found" />
+                        </Stack>
+                    </View>
+                </View>
                 <StatusBar style="light" />
             </ThemeProvider>
         </WorkoutProvider>
