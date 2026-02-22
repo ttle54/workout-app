@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Text, StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Colors } from '../../constants/Colors';
-import { Dumbbell, Clock, Activity, Flame, ChevronRight, Play, Timer as TimerIcon, History as HistoryIcon, Calculator, Scale, Share2 } from 'lucide-react-native';
+import { Dumbbell, Clock, Activity, Flame, ChevronRight, Play, Timer as TimerIcon, History as HistoryIcon, Calculator, Scale, Share2, LogIn } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useWorkout } from '../../context/WorkoutContext';
 import { LineChart, ContributionGraph } from 'react-native-chart-kit';
@@ -11,6 +11,8 @@ import { ProgressModal } from '../../components/ProgressModal';
 import { OneRepMaxModal } from '../../components/OneRepMaxModal';
 import { BodyWeightModal } from '../../components/BodyWeightModal';
 import { ShareModal } from '../../components/ShareModal';
+import { useAuth } from '../../context/AuthContext';
+import { UserGuideModal } from '../../components/UserGuideModal';
 
 const screenWidth = Math.min(Dimensions.get('window').width, 480);
 
@@ -21,7 +23,9 @@ export default function Progress() {
     const [progressModalVisible, setProgressModalVisible] = useState(false);
     const [shareVisible, setShareVisible] = useState(false);
     const [chartMode, setChartMode] = useState<'volume' | 'weight'>('volume');
+    const [guideVisible, setGuideVisible] = useState(false);
     const { history, userMetrics } = useWorkout();
+    const { isAuthenticated, user } = useAuth();
     const theme = Colors.urbanNeon;
 
     // Stats Logic
@@ -83,13 +87,32 @@ export default function Progress() {
         <ScreenLayout style={{ backgroundColor: theme.background }}>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
                 <View style={styles.headerRow}>
-                    <Text style={[styles.headerTitle, { color: theme.text }]}>Progress</Text>
-                    <TouchableOpacity
-                        style={[styles.headerButton, { backgroundColor: theme.primary, shadowColor: theme.primary }]}
-                        onPress={() => setShareVisible(true)}
-                    >
-                        <Share2 size={20} color="#000" />
-                    </TouchableOpacity>
+                    <Text style={[styles.headerTitle, { color: theme.text, fontSize: 24 }]}>
+                        {isAuthenticated && user?.firstName ? `Let's do it, ${user.firstName}!` : 'Progress'}
+                    </Text>
+                    <View style={{ flexDirection: 'row', gap: 12 }}>
+                        {!isAuthenticated && (
+                            <TouchableOpacity
+                                style={[styles.headerButton, { backgroundColor: theme.surface, shadowColor: 'transparent', borderWidth: 1, borderColor: theme.primary }]}
+                                onPress={() => router.push('/login')}
+                            >
+                                <LogIn size={20} color={theme.primary} />
+                            </TouchableOpacity>
+                        )}
+                        <TouchableOpacity
+                            style={[styles.headerButton, { backgroundColor: theme.surface, shadowColor: 'transparent', borderWidth: 1, borderColor: theme.border }]}
+                            onPress={() => setGuideVisible(true)}
+                        >
+                            <Text style={{ fontSize: 20 }}>💡</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[styles.headerButton, { backgroundColor: theme.primary, shadowColor: theme.primary }]}
+                            onPress={() => setShareVisible(true)}
+                        >
+                            <Share2 size={20} color="#000" />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 {/* Daily Summary Cards */}
@@ -209,7 +232,13 @@ export default function Progress() {
                 <View style={styles.quickActionsGrid}>
                     <TouchableOpacity
                         style={[styles.actionButtonLarge, { backgroundColor: theme.primary }]}
-                        onPress={() => router.push('/(tabs)/track')}
+                        onPress={() => {
+                            if (isAuthenticated) {
+                                router.push('/(tabs)/track');
+                            } else {
+                                router.push('/login');
+                            }
+                        }}
                     >
                         <Play size={24} color="#000" fill="#000" />
                         <Text style={[styles.actionButtonTextLarge, { color: '#000' }]}>Start Workout</Text>
@@ -226,7 +255,13 @@ export default function Progress() {
 
                         <TouchableOpacity
                             style={[styles.actionButtonSmall, { backgroundColor: theme.surface, borderColor: theme.border }]}
-                            onPress={() => router.push('/(tabs)/timer')}
+                            onPress={() => {
+                                if (isAuthenticated) {
+                                    router.push('/(tabs)/timer');
+                                } else {
+                                    router.push('/login');
+                                }
+                            }}
                         >
                             <TimerIcon size={20} color={theme.text} />
                             <Text style={[styles.actionButtonTextSmall, { color: theme.text }]}>Timer</Text>
@@ -244,7 +279,13 @@ export default function Progress() {
 
                         <TouchableOpacity
                             style={[styles.actionButtonSmall, { backgroundColor: theme.surface, borderColor: theme.border }]}
-                            onPress={() => setWeightVisible(true)}
+                            onPress={() => {
+                                if (isAuthenticated) {
+                                    setWeightVisible(true);
+                                } else {
+                                    router.push('/login');
+                                }
+                            }}
                         >
                             <Scale size={20} color={theme.text} />
                             <Text style={[styles.actionButtonTextSmall, { color: theme.text }]}>Log Weight</Text>
@@ -270,6 +311,7 @@ export default function Progress() {
                 onClose={() => setShareVisible(false)}
                 theme={theme}
             />
+            <UserGuideModal visible={guideVisible} onClose={() => setGuideVisible(false)} />
         </ScreenLayout>
     );
 }

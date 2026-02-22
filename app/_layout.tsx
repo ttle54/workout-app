@@ -12,6 +12,7 @@ import { Colors } from '../constants/Colors';
 SplashScreen.preventAutoHideAsync();
 
 import { WorkoutProvider } from '../context/WorkoutContext';
+import { AuthProvider } from '../context/AuthContext';
 
 export default function RootLayout() {
     const [loaded] = useFonts({
@@ -42,18 +43,21 @@ export default function RootLayout() {
     };
 
     return (
-        <WorkoutProvider>
-            <ThemeProvider value={CustomDarkTheme}>
-                <View style={{ flex: 1, backgroundColor: Colors.dark.background }}>
-                    <View style={{ flex: 1, width: '100%', maxWidth: 480, alignSelf: 'center', backgroundColor: Colors.dark.background }}>
-                        <Stack>
-                            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                            <Stack.Screen name="+not-found" />
-                        </Stack>
+        <AuthProvider>
+            <WorkoutProvider>
+                <ThemeProvider value={CustomDarkTheme}>
+                    <View style={{ flex: 1, backgroundColor: Colors.dark.background }}>
+                        <View style={{ flex: 1, width: '100%', maxWidth: 480, alignSelf: 'center', backgroundColor: Colors.dark.background }}>
+                            <Stack>
+                                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                                <Stack.Screen name="login" options={{ headerShown: false, presentation: 'modal' }} />
+                                <Stack.Screen name="+not-found" />
+                            </Stack>
+                        </View>
                     </View>
-                </View>
-                <StatusBar style="light" />
-            </ThemeProvider>
-        </WorkoutProvider>
+                    <StatusBar style="light" />
+                </ThemeProvider>
+            </WorkoutProvider>
+        </AuthProvider>
     );
 }

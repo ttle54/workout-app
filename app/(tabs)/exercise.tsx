@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Text, StyleSheet, View, FlatList, TextInput, TouchableOpacity, Modal, ScrollView, Image } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Colors } from '../../constants/Colors';
-import { Search, X, CirclePlay, Dumbbell, Play, History } from 'lucide-react-native';
+import { Search, X, CirclePlay, Dumbbell, Play, History, LogIn, Droplet, Plus } from 'lucide-react-native';
 import { Exercises } from '../../constants/Data';
 import { VideoCard } from '../../components/VideoCard';
 import { ProgramCard } from '../../components/ProgramCard';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../../context/AuthContext';
+import { UserGuideModal } from '../../components/UserGuideModal';
 
 import YoutubePlayer from "react-native-youtube-iframe";
 
@@ -16,6 +18,9 @@ export default function Exercise() {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedVideo, setSelectedVideo] = useState<any | null>(null);
+    const [guideVisible, setGuideVisible] = useState(false);
+    const [waterGlasses, setWaterGlasses] = useState(0);
+    const { isAuthenticated, user } = useAuth();
 
     // Mock Programs Data
     const programs = [
@@ -92,31 +97,86 @@ export default function Exercise() {
     const renderHeader = () => (
         <>
             <View style={styles.header}>
-                <View style={styles.headerRow}>
-                    <Text style={[styles.headerTitle, { color: theme.text }]}>Exercise</Text>
-                    <TouchableOpacity
-                        style={[styles.headerButton, { backgroundColor: theme.primary, shadowColor: theme.primary }]}
-                        onPress={() => router.push('/history')}
-                    >
-                        <History size={20} color="#000" />
-                    </TouchableOpacity>
+                <View style={[styles.headerRow, { marginBottom: 8 }]}>
+                    <Text style={[styles.headerTitle, { color: theme.text, fontSize: 24 }]}>
+                        {isAuthenticated && user?.firstName ? `Let's do it, ${user.firstName}!` : 'Exercise'}
+                    </Text>
+                    <View style={{ flexDirection: 'row', gap: 12 }}>
+                        {!isAuthenticated && (
+                            <TouchableOpacity
+                                style={[styles.headerButton, { backgroundColor: theme.surface, shadowColor: 'transparent', borderWidth: 1, borderColor: theme.primary }]}
+                                onPress={() => router.push('/login')}
+                            >
+                                <LogIn size={20} color={theme.primary} />
+                            </TouchableOpacity>
+                        )}
+                        <TouchableOpacity
+                            style={[styles.headerButton, { backgroundColor: theme.surface, shadowColor: 'transparent', borderWidth: 1, borderColor: theme.border }]}
+                            onPress={() => setGuideVisible(true)}
+                        >
+                            <Text style={{ fontSize: 20 }}>💡</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[styles.headerButton, { backgroundColor: theme.primary, shadowColor: theme.primary }]}
+                            onPress={() => router.push('/history')}
+                        >
+                            <History size={20} color="#000" />
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
 
-            {/* Quick Start Widget */}
-            <TouchableOpacity
-                style={[styles.startWorkoutCard, { backgroundColor: theme.primary, borderColor: theme.surface, shadowColor: theme.primary }]}
-                onPress={() => router.push('/(tabs)/track')}
-            >
-                <View style={[styles.startIconContainer, { backgroundColor: 'rgba(0,0,0,0.1)' }]}>
-                    <Play size={24} color="#000" fill="#000" />
+            {/* Quick Start & Status Widgets */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+                {/* Start Workout Card */}
+                <TouchableOpacity
+                    style={[styles.startWorkoutCard, { backgroundColor: theme.primary, borderColor: theme.surface, shadowColor: theme.primary }]}
+                    onPress={() => {
+                        if (isAuthenticated) {
+                            router.push('/(tabs)/track');
+                        } else {
+                            router.push('/login');
+                        }
+                    }}
+                >
+                    <View style={styles.startWorkoutTop}>
+                        <View style={[styles.startIconContainer, { backgroundColor: 'rgba(0,0,0,0.1)' }]}>
+                            <Play size={24} color="#000" fill="#000" />
+                        </View>
+                        <Dumbbell size={24} color="#000" style={{ opacity: 0.3 }} />
+                    </View>
+                    <View>
+                        <Text style={[styles.startTitle, { color: '#000' }]}>Start Workout</Text>
+                        <Text style={[styles.startSubtitle, { color: '#000', opacity: 0.8 }]}>Custom session</Text>
+                    </View>
+                </TouchableOpacity>
+
+                {/* Hydration Tracker Card */}
+                <View style={[styles.startWorkoutCard, { backgroundColor: theme.secondary, borderColor: theme.surface, shadowColor: theme.secondary }]}>
+                    <View style={styles.startWorkoutTop}>
+                        <View style={[styles.startIconContainer, { backgroundColor: 'rgba(0,0,0,0.1)' }]}>
+                            <Droplet size={24} color="#000" fill="#000" />
+                        </View>
+                        <TouchableOpacity
+                            style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(0,0,0,0.1)', justifyContent: 'center', alignItems: 'center' }}
+                            onPress={() => setWaterGlasses(prev => Math.min(prev + 1, 8))}
+                        >
+                            <Plus size={20} color="#000" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ width: '100%' }}>
+                        <Text style={[styles.startTitle, { color: '#000' }]}>Hydration</Text>
+                        <Text style={[styles.startSubtitle, { color: '#000', opacity: 0.8, marginBottom: 8 }]}>
+                            {waterGlasses} of 8 glasses
+                        </Text>
+                        {/* Progress Bar */}
+                        <View style={{ width: '100%', height: 6, backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 3, overflow: 'hidden' }}>
+                            <View style={{ width: `${(waterGlasses / 8) * 100}%`, height: '100%', backgroundColor: '#000', borderRadius: 3 }} />
+                        </View>
+                    </View>
                 </View>
-                <View>
-                    <Text style={[styles.startTitle, { color: '#000' }]}>Start Workout</Text>
-                    <Text style={[styles.startSubtitle, { color: '#000', opacity: 0.8 }]}>Track your custom session</Text>
-                </View>
-                <Dumbbell size={24} color="#000" style={{ marginLeft: 'auto', opacity: 0.8 }} />
-            </TouchableOpacity>
+            </View>
 
             {/* Featured Programs Section */}
             <View style={styles.programsSection}>
@@ -205,6 +265,7 @@ export default function Exercise() {
             />
 
             {renderVideoModal()}
+            <UserGuideModal visible={guideVisible} onClose={() => setGuideVisible(false)} />
         </ScreenLayout>
     );
 }
@@ -215,7 +276,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     header: {
-        marginBottom: 20,
+        marginBottom: 12,
     },
     headerRow: {
         flexDirection: 'row',
@@ -234,17 +295,25 @@ const styles = StyleSheet.create({
         elevation: 8,
     },
     startWorkoutCard: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        width: '48%',
+        height: 160,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
         padding: 16,
         borderRadius: 16,
-        marginBottom: 24,
+        marginBottom: 16,
         borderWidth: 1,
-        gap: 16,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 8,
         elevation: 4,
+    },
+    startWorkoutTop: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
     },
     startIconContainer: {
         width: 48,

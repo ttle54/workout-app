@@ -4,7 +4,7 @@ import { Colors } from '../constants/Colors';
 import { ChevronRight, Calendar, Clock } from 'lucide-react-native';
 
 const width = Math.min(Dimensions.get('window').width, 480);
-const cardWidth = width * 0.7; // Shows next card slightly
+const cardWidth = (width - 48) / 2; // Fits 2 gracefully on a row like VideoCard
 
 interface ProgramCardProps {
     title: string;
@@ -22,26 +22,27 @@ export const ProgramCard = ({ title, level, daysPerWeek, durationMins, color, on
             onPress={onPress}
             activeOpacity={0.9}
         >
-            <View style={styles.content}>
+            <View style={styles.topSection}>
                 <View style={styles.badge}>
                     <Text style={styles.badgeText}>{level}</Text>
                 </View>
-                <Text style={styles.title}>{title}</Text>
-
-                <View style={styles.metaContainer}>
-                    <View style={styles.metaItem}>
-                        <Calendar size={14} color="rgba(0,0,0,0.6)" />
-                        <Text style={styles.metaText}>{daysPerWeek} days/wk</Text>
-                    </View>
-                    <View style={styles.metaItem}>
-                        <Clock size={14} color="rgba(0,0,0,0.6)" />
-                        <Text style={styles.metaText}>{durationMins} mins</Text>
-                    </View>
+                <View style={styles.arrowContainer}>
+                    <ChevronRight size={16} color="#000" />
                 </View>
             </View>
 
-            <View style={styles.arrowContainer}>
-                <ChevronRight size={24} color="#000" />
+            <View style={styles.bottomSection}>
+                <Text style={styles.title} numberOfLines={2}>{title}</Text>
+                <View style={styles.metaContainer}>
+                    <View style={styles.metaItem}>
+                        <Calendar size={12} color="rgba(0,0,0,0.6)" />
+                        <Text style={styles.metaText}>{daysPerWeek} d/wk</Text>
+                    </View>
+                    <View style={styles.metaItem}>
+                        <Clock size={12} color="rgba(0,0,0,0.6)" />
+                        <Text style={styles.metaText}>{durationMins} m</Text>
+                    </View>
+                </View>
             </View>
         </TouchableOpacity>
     );
@@ -53,35 +54,36 @@ const styles = StyleSheet.create({
         height: 160,
         borderRadius: 20,
         marginRight: 16,
-        padding: 20,
+        padding: 16,
         justifyContent: 'space-between',
-        flexDirection: 'row',
-        alignItems: 'flex-end',
+        flexDirection: 'column',
     },
-    content: {
-        flex: 1,
-        height: '100%',
+    topSection: {
+        flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'flex-start',
+    },
+    bottomSection: {
+        justifyContent: 'flex-end',
     },
     badge: {
         backgroundColor: 'rgba(0,0,0,0.1)',
-        paddingHorizontal: 10,
+        paddingHorizontal: 8,
         paddingVertical: 4,
-        borderRadius: 8,
-        alignSelf: 'flex-start',
+        borderRadius: 6,
     },
     badgeText: {
         color: '#000',
-        fontSize: 12,
+        fontSize: 10,
         fontWeight: 'bold',
         textTransform: 'uppercase',
     },
     title: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#000',
-        marginTop: 8,
         marginBottom: 8,
+        lineHeight: 22,
     },
     metaContainer: {
         flexDirection: 'row',
@@ -99,9 +101,9 @@ const styles = StyleSheet.create({
     },
     arrowContainer: {
         backgroundColor: 'rgba(0,0,0,0.1)',
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 28,
+        height: 28,
+        borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
     },
